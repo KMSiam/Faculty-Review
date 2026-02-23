@@ -8,20 +8,25 @@ const HomePage = () => {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
     const [topProfessors, setTopProfessors] = useState([]);
+    const [stats, setStats] = useState({ professors: 0, reviews: 0, students: 0 });
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchTopProfessors = async () => {
+        const fetchData = async () => {
             try {
-                const { data } = await api.get('/professors?limit=3');
-                setTopProfessors(data.slice(0, 3));
+                const [profRes, statsRes] = await Promise.all([
+                    api.get('/professors?limit=3'),
+                    api.get('/stats')
+                ]);
+                setTopProfessors(profRes.data.slice(0, 3));
+                setStats(statsRes.data);
             } catch (error) {
-                console.error('Error fetching professors:', error);
+                console.error('Error fetching data:', error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchTopProfessors();
+        fetchData();
     }, []);
 
     const handleSearch = (e) => {
@@ -116,24 +121,36 @@ const HomePage = () => {
                 )}
             </section>
 
-            {/* Stats Section */}
+            {/* Real-time Stats Section */}
             <section className="glass-card p-12 overflow-hidden relative">
                 <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-64 h-64 bg-primary-500 rounded-full blur-[100px] opacity-10"></div>
                 <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-64 h-64 bg-accent-500 rounded-full blur-[100px] opacity-10"></div>
 
                 <div className="relative grid grid-cols-1 sm:grid-cols-3 gap-12 text-center">
-                    <div>
-                        <div className="text-4xl font-extrabold text-white mb-2">10k+</div>
-                        <div className="text-slate-400 uppercase tracking-widest text-xs">Students</div>
+                    <div className="space-y-1">
+                        <div className="text-4xl font-black text-white transition-all duration-500 tabular-nums">
+                            {loading ? '...' : stats.students.toLocaleString()}{stats.students > 1000 ? '+' : ''}
+                        </div>
+                        <div className="text-slate-500 uppercase tracking-[0.2em] text-[10px] font-bold">Active Students</div>
                     </div>
-                    <div>
-                        <div className="text-4xl font-extrabold text-primary-500 mb-2">5k+</div>
-                        <div className="text-slate-400 uppercase tracking-widest text-xs">Professors</div>
+                    <div className="space-y-1">
+                        <div className="text-4xl font-black text-primary-500 transition-all duration-500 tabular-nums">
+                            {loading ? '...' : stats.professors.toLocaleString()}{stats.professors > 500 ? '+' : ''}
+                        </div>
+                        <div className="text-slate-500 uppercase tracking-[0.2em] text-[10px] font-bold">Verified Faculty</div>
                     </div>
-                    <div>
-                        <div className="text-4xl font-extrabold text-accent-500 mb-2">50k+</div>
-                        <div className="text-slate-400 uppercase tracking-widest text-xs">Reviews</div>
+                    <div className="space-y-1">
+                        <div className="text-4xl font-black text-accent-500 transition-all duration-500 tabular-nums">
+                            {loading ? '...' : stats.reviews.toLocaleString()}{stats.reviews > 1000 ? '+' : ''}
+                        </div>
+                        <div className="text-slate-500 uppercase tracking-[0.2em] text-[10px] font-bold">Total Reviews</div>
                     </div>
+                </div>
+
+                {/* Live Pulse Indicator */}
+                <div className="absolute top-4 right-4 flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.6)]"></div>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Live Updates</span>
                 </div>
             </section>
         </div>

@@ -20,6 +20,7 @@ app.use(express.json());
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/professors', require('./routes/professors'));
 app.use('/api/reviews', require('./routes/reviews'));
+app.use('/api/stats', require('./routes/stats'));
 
 // Health check
 app.get('/api/health', (req, res) => {
