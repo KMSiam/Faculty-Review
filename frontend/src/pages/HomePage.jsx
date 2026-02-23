@@ -21,7 +21,7 @@ const HomePage = () => {
                 setTopProfessors(profRes.data.slice(0, 3));
                 setStats(statsRes.data);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                // Error handled by fallback or UI state
             } finally {
                 setLoading(false);
             }

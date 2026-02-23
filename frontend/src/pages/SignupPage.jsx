@@ -31,14 +31,12 @@ const SignupPage = () => {
         setError('');
         setIsSubmitting(true);
         try {
-            console.log('Attempting registration at:', import.meta.env.VITE_API_URL || 'http://localhost:5000/api');
             await register(formData);
             addToast('Account created successfully!', 'success');
             navigate('/');
         } catch (err) {
-            console.error('Registration Error:', err);
             if (!err.response) {
-                setError('Network error: Is the backend server running? (Check CORS/API URL)');
+                setError('Network error: Is the backend server running?');
             } else {
                 setError(err.response.data?.message || 'Something went wrong. Please try again.');
             }

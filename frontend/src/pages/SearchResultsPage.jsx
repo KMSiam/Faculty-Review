@@ -21,7 +21,7 @@ const SearchResultsPage = () => {
                 const { data } = await api.get(`/professors?q=${query}&university=${university}`);
                 setProfessors(data);
             } catch (error) {
-                console.error('Error fetching search results:', error);
+                // Error handled by UI loading state
             } finally {
                 setLoading(false);
             }

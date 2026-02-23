@@ -33,7 +33,7 @@ const ReviewCard = ({ review }) => {
             setHelpfulCount(data.helpfulCount);
             setIsHelpful(data.isHelpful);
         } catch (error) {
-            console.error('Error toggling helpful:', error);
+            // Silently fail or handled by toast (login check)
         } finally {
             setIsVoting(false);
         }

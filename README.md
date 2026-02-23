@@ -14,7 +14,14 @@ A full-stack professor rating website similar to RateMyProfessors. Built with mo
 
 - **Frontend**: React (Vite), Tailwind CSS, Lucide Icons, Axios.
 - **Backend**: Node.js, Express, JWT, bcryptjs.
-- **Database**: MongoDB (Local).
+- **Database**: MongoDB Atlas (Cloud) / Local MongoDB.
+
+## Deployment
+
+The project is designed to be easily deployed:
+- **Frontend**: Optimized for [Vercel](https://vercel.com).
+- **Backend**: Optimized for [Render](https://render.com).
+- **Database**: [MongoDB Atlas](https://www.mongodb.com/cloud/atlas).
 
 ## Getting Started
 
