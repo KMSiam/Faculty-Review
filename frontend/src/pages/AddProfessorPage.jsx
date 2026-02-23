@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { PlusCircle, Building2, GraduationCap, User, AlertCircle, ChevronLeft, CheckCircle2 } from 'lucide-react';
 import api from '../utils/api';
+import { useToast } from '../context/ToastContext';
 
 const AddProfessorPage = () => {
     const navigate = useNavigate();
+    const { addToast } = useToast();
     const [formData, setFormData] = useState({
         name: '',
         department: '',
@@ -14,6 +16,10 @@ const AddProfessorPage = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
     const [professorId, setProfessorId] = useState('');
+
+    useEffect(() => {
+        document.title = 'Add Professor | FacultyReview';
+    }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });

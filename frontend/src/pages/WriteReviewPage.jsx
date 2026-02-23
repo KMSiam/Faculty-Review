@@ -3,10 +3,12 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Star, AlertCircle, Send, CheckCircle2, ChevronLeft } from 'lucide-react';
 import api from '../utils/api';
 import StarRating from '../components/StarRating';
+import { useToast } from '../context/ToastContext';
 
 const WriteReviewPage = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { addToast } = useToast();
     const [professor, setProfessor] = useState(null);
     const [formData, setFormData] = useState({
         rating: 0,
@@ -17,6 +19,10 @@ const WriteReviewPage = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
+
+    useEffect(() => {
+        document.title = 'Write a Review | FacultyReview';
+    }, []);
 
     useEffect(() => {
         const fetchProfessor = async () => {
@@ -113,8 +119,8 @@ const WriteReviewPage = () => {
                                         type="button"
                                         onClick={() => setFormData({ ...formData, difficulty: num })}
                                         className={`w-10 h-10 rounded-lg font-bold transition-all ${formData.difficulty === num
-                                                ? 'bg-accent-500 text-white scale-110 shadow-lg shadow-accent-500/20'
-                                                : 'bg-slate-800 text-slate-500 hover:bg-slate-700'
+                                            ? 'bg-accent-500 text-white scale-110 shadow-lg shadow-accent-500/20'
+                                            : 'bg-slate-800 text-slate-500 hover:bg-slate-700'
                                             }`}
                                     >
                                         {num}

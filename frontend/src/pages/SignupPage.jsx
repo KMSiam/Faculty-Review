@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { UserPlus, Mail, Lock, User, Building, AlertCircle } from 'lucide-react';
 
 const SignupPage = () => {
@@ -13,7 +14,12 @@ const SignupPage = () => {
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { register } = useAuth();
+    const { addToast } = useToast();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.title = 'Sign Up | FacultyReview';
+    }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -25,9 +31,11 @@ const SignupPage = () => {
         setIsSubmitting(true);
         try {
             await register(formData);
+            addToast('Account created successfully!', 'success');
             navigate('/');
         } catch (err) {
             setError(err.response?.data?.message || 'Something went wrong. Please try again.');
+            addToast(err.response?.data?.message || 'Registration failed', 'error');
         } finally {
             setIsSubmitting(false);
         }

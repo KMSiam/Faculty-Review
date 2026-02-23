@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { User, Calendar, Award, ThumbsUp } from 'lucide-react';
 import StarRating from './StarRating';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import api from '../utils/api';
 import clsx from 'clsx';
 
 const ReviewCard = ({ review }) => {
     const { user } = useAuth();
+    const { addToast } = useToast();
     const [helpfulCount, setHelpfulCount] = useState(review.helpfulVotes?.length || 0);
     const [isHelpful, setIsHelpful] = useState(review.helpfulVotes?.includes(user?._id));
     const [isVoting, setIsVoting] = useState(false);
@@ -19,7 +21,7 @@ const ReviewCard = ({ review }) => {
 
     const handleHelpfulToggle = async () => {
         if (!user) {
-            alert('Please login to mark reviews as helpful');
+            addToast('Please login to mark reviews as helpful', 'error');
             return;
         }
 

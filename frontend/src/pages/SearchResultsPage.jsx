@@ -27,6 +27,7 @@ const SearchResultsPage = () => {
             }
         };
         fetchResults();
+        document.title = 'Search Professors | FacultyReview';
     }, [query, university]);
 
     const handleSearch = (e) => {

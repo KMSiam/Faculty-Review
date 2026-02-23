@@ -27,6 +27,7 @@ const HomePage = () => {
             }
         };
         fetchData();
+        document.title = 'FacultyReview | Find the Right Professor';
     }, []);
 
     const handleSearch = (e) => {

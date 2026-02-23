@@ -23,6 +23,7 @@ const ProfessorProfilePage = () => {
                 ]);
                 setProfessor(profRes.data);
                 setReviews(reviewsRes.data);
+                document.title = `${profRes.data.name} | FacultyReview`;
             } catch (err) {
                 setError('Professor not found or server error');
             } finally {

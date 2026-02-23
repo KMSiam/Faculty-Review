@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { LogIn, Mail, Lock, AlertCircle } from 'lucide-react';
 
 const LoginPage = () => {
@@ -9,7 +10,12 @@ const LoginPage = () => {
     const [error, setError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { login } = useAuth();
+    const { addToast } = useToast();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.title = 'Login | FacultyReview';
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -17,9 +23,11 @@ const LoginPage = () => {
         setIsSubmitting(true);
         try {
             await login(email, password);
+            addToast('Welcome back!', 'success');
             navigate('/');
         } catch (err) {
             setError(err.response?.data?.message || 'Invalid email or password');
+            addToast(err.response?.data?.message || 'Login failed', 'error');
         } finally {
             setIsSubmitting(false);
         }

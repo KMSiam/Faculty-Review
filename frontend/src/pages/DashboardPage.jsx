@@ -21,6 +21,7 @@ const DashboardPage = () => {
             }
         };
         fetchMyReviews();
+        document.title = 'My Dashboard | FacultyReview';
     }, []);
 
     return (
