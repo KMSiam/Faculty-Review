@@ -92,4 +92,34 @@ const getMyReviews = async (req, res, next) => {
     }
 };
 
-module.exports = { createReview, getReviewsByProfessor, getMyReviews };
+// @desc    Toggle helpful vote on a review
+// @route   PATCH /api/reviews/:id/helpful
+// @access  Private
+const toggleHelpful = async (req, res, next) => {
+    try {
+        const review = await Review.findById(req.params.id);
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found' });
+        }
+
+        const voteIndex = review.helpfulVotes.indexOf(req.user._id);
+
+        if (voteIndex > -1) {
+            // Remove vote
+            review.helpfulVotes.splice(voteIndex, 1);
+        } else {
+            // Add vote
+            review.helpfulVotes.push(req.user._id);
+        }
+
+        await review.save();
+        res.json({
+            helpfulCount: review.helpfulVotes.length,
+            isHelpful: review.helpfulVotes.includes(req.user._id),
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { createReview, getReviewsByProfessor, getMyReviews, toggleHelpful };

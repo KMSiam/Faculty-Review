@@ -4,6 +4,7 @@ const {
     createReview,
     getReviewsByProfessor,
     getMyReviews,
+    toggleHelpful,
 } = require('../controllers/reviewController');
 const { protect } = require('../middleware/auth');
 
@@ -32,5 +33,7 @@ router.post(
     ],
     createReview
 );
+
+router.patch('/:id/helpful', protect, toggleHelpful);
 
 module.exports = router;

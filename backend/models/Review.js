@@ -29,6 +29,12 @@ const reviewSchema = new mongoose.Schema({
         trim: true,
         maxlength: [1000, 'Comment cannot exceed 1000 characters'],
     },
+    helpfulVotes: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+    ],
     createdAt: {
         type: Date,
         default: Date.now,

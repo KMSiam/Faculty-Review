@@ -1,13 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { User, Calendar, Award, ThumbsUp } from 'lucide-react';
 import StarRating from './StarRating';
+import { useAuth } from '../context/AuthContext';
+import api from '../utils/api';
+import clsx from 'clsx';
 
 const ReviewCard = ({ review }) => {
+    const { user } = useAuth();
+    const [helpfulCount, setHelpfulCount] = useState(review.helpfulVotes?.length || 0);
+    const [isHelpful, setIsHelpful] = useState(review.helpfulVotes?.includes(user?._id));
+    const [isVoting, setIsVoting] = useState(false);
+
     const date = new Date(review.createdAt).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
     });
+
+    const handleHelpfulToggle = async () => {
+        if (!user) {
+            alert('Please login to mark reviews as helpful');
+            return;
+        }
+
+        if (isVoting) return;
+
+        try {
+            setIsVoting(true);
+            const { data } = await api.patch(`/reviews/${review._id}/helpful`);
+            setHelpfulCount(data.helpfulCount);
+            setIsHelpful(data.isHelpful);
+        } catch (error) {
+            console.error('Error toggling helpful:', error);
+        } finally {
+            setIsVoting(false);
+        }
+    };
 
     return (
         <div className="glass-card p-8 animate-fade-in relative overflow-hidden group">
@@ -47,8 +75,16 @@ const ReviewCard = ({ review }) => {
                     <span>{date}</span>
                 </div>
                 <div className="flex items-center gap-4">
-                    <button className="flex items-center gap-1.5 hover:text-primary-400 transition-colors">
-                        <ThumbsUp className="w-4 h-4" /> Helpful (0)
+                    <button
+                        onClick={handleHelpfulToggle}
+                        disabled={isVoting}
+                        className={clsx(
+                            "flex items-center gap-1.5 transition-all active:scale-95",
+                            isHelpful ? "text-primary-400 font-bold" : "hover:text-primary-400"
+                        )}
+                    >
+                        <ThumbsUp className={clsx("w-4 h-4", isHelpful && "fill-primary-400")} />
+                        Helpful ({helpfulCount})
                     </button>
                 </div>
             </div>
