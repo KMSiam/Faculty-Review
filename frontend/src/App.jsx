@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import AdminNavbar from './components/AdminNavbar';
 import ScrollToTop from './components/ScrollToTop';
 
 // Pages
@@ -41,46 +42,62 @@ const AdminRoute = ({ children }) => {
   return children;
 };
 
+function AppContent() {
+  const { user, isAdmin, loading } = useAuth();
+
+  if (loading) return (
+    <div className="min-h-screen bg-dark-900 flex items-center justify-center">
+      <div className="w-10 h-10 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-dark-900 text-slate-200">
+      {isAdmin ? <AdminNavbar /> : <Navbar />}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <Routes>
+          {/* Admin Auto-Redirection from Home */}
+          <Route path="/" element={isAdmin ? <Navigate to="/admin" replace /> : <HomePage />} />
+
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/search" element={isAdmin ? <Navigate to="/admin" replace /> : <SearchResultsPage />} />
+          <Route path="/professors/:id" element={isAdmin ? <Navigate to="/admin" replace /> : <ProfessorProfilePage />} />
+
+          <Route path="/professors/:id/review" element={
+            <ProtectedRoute>
+              {isAdmin ? <Navigate to="/admin" replace /> : <WriteReviewPage />}
+            </ProtectedRoute>
+          } />
+
+          <Route path="/dashboard" element={
+            <ProtectedRoute>
+              {isAdmin ? <Navigate to="/admin" replace /> : <DashboardPage />}
+            </ProtectedRoute>
+          } />
+
+          <Route path="/add-professor" element={
+            <ProtectedRoute>
+              {isAdmin ? <Navigate to="/admin" replace /> : <AddProfessorPage />}
+            </ProtectedRoute>
+          } />
+
+          <Route path="/admin" element={
+            <AdminRoute>
+              <AdminDashboardPage />
+            </AdminRoute>
+          } />
+        </Routes>
+      </main>
+    </div>
+  );
+}
+
 function App() {
   return (
     <Router>
       <ScrollToTop />
-      <div className="min-h-screen bg-dark-900 text-slate-200">
-        <Navbar />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/search" element={<SearchResultsPage />} />
-            <Route path="/professors/:id" element={<ProfessorProfilePage />} />
-
-            <Route path="/professors/:id/review" element={
-              <ProtectedRoute>
-                <WriteReviewPage />
-              </ProtectedRoute>
-            } />
-
-            <Route path="/dashboard" element={
-              <ProtectedRoute>
-                <DashboardPage />
-              </ProtectedRoute>
-            } />
-
-            <Route path="/add-professor" element={
-              <ProtectedRoute>
-                <AddProfessorPage />
-              </ProtectedRoute>
-            } />
-
-            <Route path="/admin" element={
-              <AdminRoute>
-                <AdminDashboardPage />
-              </AdminRoute>
-            } />
-          </Routes>
-        </main>
-      </div>
+      <AppContent />
     </Router>
   );
 }

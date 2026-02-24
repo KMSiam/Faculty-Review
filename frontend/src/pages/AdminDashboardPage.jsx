@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
     Users,
     MessageSquare,
@@ -23,7 +24,8 @@ const AdminDashboardPage = () => {
     const [professors, setProfessors] = useState([]);
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('stats');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const activeTab = searchParams.get('tab') || 'stats';
     const [editingProfessor, setEditingProfessor] = useState(null);
     const [reports, setReports] = useState([]);
 
@@ -146,7 +148,7 @@ const AdminDashboardPage = () => {
                 {['stats', 'professors', 'users', 'reports'].map((tab) => (
                     <button
                         key={tab}
-                        onClick={() => setActiveTab(tab)}
+                        onClick={() => setSearchParams({ tab })}
                         className={clsx(
                             "px-6 py-2.5 rounded-lg text-sm font-bold transition-all capitalize flex items-center gap-2",
                             activeTab === tab
