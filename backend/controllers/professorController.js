@@ -6,7 +6,7 @@ const Professor = require('../models/Professor');
 // @access  Public
 const getProfessors = async (req, res, next) => {
     try {
-        const { q, university } = req.query;
+        const { q, university, limit, minReviews } = req.query;
         const filter = {};
 
         if (q) {
@@ -21,9 +21,13 @@ const getProfessors = async (req, res, next) => {
             filter.university = { $regex: university, $options: 'i' };
         }
 
+        if (minReviews) {
+            filter.reviewCount = { $gte: parseInt(minReviews) };
+        }
+
         const professors = await Professor.find(filter)
             .sort({ avgRating: -1, reviewCount: -1 })
-            .limit(50);
+            .limit(limit ? parseInt(limit) : 50);
 
         res.json(professors);
     } catch (error) {

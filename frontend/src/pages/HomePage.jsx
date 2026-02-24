@@ -15,10 +15,10 @@ const HomePage = () => {
         const fetchData = async () => {
             try {
                 const [profRes, statsRes] = await Promise.all([
-                    api.get('/professors?limit=3'),
+                    api.get('/professors?limit=3&minReviews=1'),
                     api.get('/stats')
                 ]);
-                setTopProfessors(profRes.data.slice(0, 3));
+                setTopProfessors(profRes.data);
                 setStats(statsRes.data);
             } catch (error) {
                 // Error handled by fallback or UI state
