@@ -6,7 +6,7 @@ import { useToast } from '../context/ToastContext';
 import api from '../utils/api';
 import clsx from 'clsx';
 
-const ReviewCard = ({ review }) => {
+const ReviewCard = ({ review }) => { 
     const { user } = useAuth();
     const { addToast } = useToast();
     const [helpfulCount, setHelpfulCount] = useState(review.helpfulVotes?.length || 0);
