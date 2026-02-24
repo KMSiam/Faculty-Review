@@ -32,6 +32,8 @@ const register = async (req, res, next) => {
             name: user.name,
             email: user.email,
             university: user.university,
+            role: user.role,
+            createdAt: user.createdAt,
             token: generateToken(user._id),
         });
     } catch (error) {
@@ -66,6 +68,8 @@ const login = async (req, res, next) => {
             name: user.name,
             email: user.email,
             university: user.university,
+            role: user.role,
+            createdAt: user.createdAt,
             token: generateToken(user._id),
         });
     } catch (error) {
@@ -84,6 +88,7 @@ const getMe = async (req, res, next) => {
             name: user.name,
             email: user.email,
             university: user.university,
+            role: user.role,
             createdAt: user.createdAt,
         });
     } catch (error) {
