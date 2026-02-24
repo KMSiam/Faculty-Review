@@ -81,8 +81,10 @@ const ReviewCard = ({ review }) => {
                         onClick={handleHelpfulToggle}
                         disabled={isVoting}
                         className={clsx(
-                            "flex items-center gap-1.5 transition-all active:scale-95",
-                            isHelpful ? "text-primary-400 font-bold" : "hover:text-primary-400"
+                            "flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all active:scale-95 font-medium",
+                            isHelpful 
+                                ? "bg-primary-500/20 text-primary-400 shadow-lg shadow-primary-500/20" 
+                                : "hover:bg-primary-500/10 hover:text-primary-400"
                         )}
                     >
                         <ThumbsUp className={clsx("w-4 h-4", isHelpful && "fill-primary-400")} />
