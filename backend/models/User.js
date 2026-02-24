@@ -27,6 +27,16 @@ const userSchema = new mongoose.Schema({
         trim: true,
         default: '',
     },
+    role: {
+        type: String,
+        enum: ['student', 'admin'],
+        default: 'student',
+    },
+    status: {
+        type: String,
+        enum: ['active', 'banned'],
+        default: 'active',
+    },
     createdAt: {
         type: Date,
         default: Date.now,

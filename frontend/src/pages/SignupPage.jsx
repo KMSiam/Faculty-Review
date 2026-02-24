@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
-import { UserPlus, Mail, Lock, User, Building, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { UserPlus, Mail, Lock, User, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import UniversityAutocomplete from '../components/UniversityAutocomplete';
 
 const SignupPage = () => {
     const [formData, setFormData] = useState({
@@ -99,18 +100,11 @@ const SignupPage = () => {
 
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-slate-300 ml-1">University</label>
-                        <div className="relative">
-                            <input
-                                type="text"
-                                name="university"
-                                required
-                                className="input-field pl-11"
-                                placeholder="University Name"
-                                value={formData.university}
-                                onChange={handleChange}
-                            />
-                            <Building className="absolute left-3.5 top-2.5 w-5 h-5 text-slate-500" />
-                        </div>
+                        <UniversityAutocomplete
+                            value={formData.university}
+                            onChange={(val) => setFormData({ ...formData, university: val })}
+                            placeholder="Your University"
+                        />
                     </div>
 
                     <div className="space-y-2">

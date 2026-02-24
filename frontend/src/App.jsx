@@ -13,6 +13,7 @@ import ProfessorProfilePage from './pages/ProfessorProfilePage';
 import WriteReviewPage from './pages/WriteReviewPage';
 import DashboardPage from './pages/DashboardPage';
 import AddProfessorPage from './pages/AddProfessorPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -24,6 +25,19 @@ const ProtectedRoute = ({ children }) => {
   );
 
   if (!user) return <Navigate to="/login" />;
+  return children;
+};
+
+const AdminRoute = ({ children }) => {
+  const { user, loading, isAdmin } = useAuth();
+
+  if (loading) return (
+    <div className="min-h-screen bg-dark-900 flex items-center justify-center">
+      <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+    </div>
+  );
+
+  if (!user || !isAdmin) return <Navigate to="/" />;
   return children;
 };
 
@@ -57,6 +71,12 @@ function App() {
               <ProtectedRoute>
                 <AddProfessorPage />
               </ProtectedRoute>
+            } />
+
+            <Route path="/admin" element={
+              <AdminRoute>
+                <AdminDashboardPage />
+              </AdminRoute>
             } />
           </Routes>
         </main>

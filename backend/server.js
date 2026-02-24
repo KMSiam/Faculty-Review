@@ -2,13 +2,16 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
+const seedAdmin = require('./seed');
 const errorHandler = require('./middleware/errorHandler');
 
 // Load env vars
 dotenv.config();
 
 // Connect to database
-connectDB();
+connectDB().then(() => {
+    seedAdmin();
+});
 
 const app = express();
 
@@ -37,6 +40,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/professors', require('./routes/professors'));
 app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/stats', require('./routes/stats'));
+app.use('/api/admin', require('./routes/admin'));
 
 // Health check
 app.get('/api/health', (req, res) => {

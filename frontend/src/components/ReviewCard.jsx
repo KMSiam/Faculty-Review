@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import { User, Calendar, Award, ThumbsUp } from 'lucide-react';
+import { User, Calendar, ThumbsUp, Flag } from 'lucide-react';
 import StarRating from './StarRating';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import api from '../utils/api';
 import clsx from 'clsx';
 
-const ReviewCard = ({ review }) => { 
+const ReviewCard = ({ review }) => {
     const { user } = useAuth();
     const { addToast } = useToast();
     const [helpfulCount, setHelpfulCount] = useState(review.helpfulVotes?.length || 0);
     const [isHelpful, setIsHelpful] = useState(review.helpfulVotes?.includes(user?._id));
+    const [reported, setReported] = useState(review.reports?.includes(user?._id));
     const [isVoting, setIsVoting] = useState(false);
+    const [isReporting, setIsReporting] = useState(false);
 
     const date = new Date(review.createdAt).toLocaleDateString('en-US', {
         year: 'numeric',
@@ -36,6 +38,26 @@ const ReviewCard = ({ review }) => {
             // Silently fail or handled by toast (login check)
         } finally {
             setIsVoting(false);
+        }
+    };
+
+    const handleReport = async () => {
+        if (!user) {
+            addToast('Please login to report reviews', 'error');
+            return;
+        }
+
+        if (isReporting) return;
+
+        try {
+            setIsReporting(true);
+            const { data } = await api.post(`/reviews/${review._id}/report`);
+            setReported(data.isReported);
+            addToast(data.message, 'success');
+        } catch (error) {
+            addToast('Action failed', 'error');
+        } finally {
+            setIsReporting(false);
         }
     };
 
@@ -93,6 +115,21 @@ const ReviewCard = ({ review }) => {
                     >
                         <ThumbsUp className={clsx("w-4 h-4", isHelpful && "fill-primary-400")} />
                         Helpful ({helpfulCount})
+                    </button>
+
+                    <button
+                        onClick={handleReport}
+                        disabled={isReporting}
+                        className={clsx(
+                            "flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all active:scale-95 font-medium",
+                            reported
+                                ? "bg-red-500/10 text-red-500 shadow-lg shadow-red-500/10"
+                                : "hover:bg-red-500/10 hover:text-red-500"
+                        )}
+                        title={reported ? "Unreport review" : "Report review"}
+                    >
+                        <Flag className={clsx("w-4 h-4", reported && "fill-red-500")} />
+                        {reported ? 'Reported' : 'Report'}
                     </button>
                 </div>
             </div>

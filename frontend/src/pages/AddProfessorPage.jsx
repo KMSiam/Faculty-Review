@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { PlusCircle, Building2, GraduationCap, User, AlertCircle, ChevronLeft, CheckCircle2 } from 'lucide-react';
 import api from '../utils/api';
 import { useToast } from '../context/ToastContext';
+import UniversityAutocomplete from '../components/UniversityAutocomplete';
 
 const AddProfessorPage = () => {
     const navigate = useNavigate();
@@ -113,18 +114,11 @@ const AddProfessorPage = () => {
 
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-slate-300 ml-1">University</label>
-                        <div className="relative">
-                            <input
-                                type="text"
-                                name="university"
-                                required
-                                className="input-field pl-11"
-                                placeholder="e.g. Harvard University"
-                                value={formData.university}
-                                onChange={handleChange}
-                            />
-                            <Building2 className="absolute left-3.5 top-2.5 w-5 h-5 text-slate-500" />
-                        </div>
+                        <UniversityAutocomplete
+                            value={formData.university}
+                            onChange={(val) => setFormData({ ...formData, university: val })}
+                            placeholder="e.g. University of Dhaka"
+                        />
                     </div>
 
                     <button
