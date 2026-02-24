@@ -36,6 +36,7 @@ const AddProfessorPage = () => {
             setTimeout(() => navigate(`/professors/${data._id}`), 2000);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to add professor. Please check your inputs.');
+            addToast(err.response?.data?.message || 'Failed to add professor', 'error');
         } finally {
             setIsSubmitting(false);
         }

@@ -62,6 +62,18 @@ const createProfessor = async (req, res, next) => {
 
         const { name, department, university } = req.body;
 
+        // Check for duplicates (same name and university)
+        const existingProfessor = await Professor.findOne({
+            name: { $regex: new RegExp(`^${name}$`, 'i') },
+            university: { $regex: new RegExp(`^${university}$`, 'i') }
+        });
+
+        if (existingProfessor) {
+            return res.status(400).json({
+                message: 'A professor with this name at this university already exists.'
+            });
+        }
+
         const professor = await Professor.create({ name, department, university });
         res.status(201).json(professor);
     } catch (error) {
