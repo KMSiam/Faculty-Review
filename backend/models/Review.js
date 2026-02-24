@@ -35,6 +35,10 @@ const reviewSchema = new mongoose.Schema({
             ref: 'User',
         },
     ],
+    isAnonymous: {
+        type: Boolean,
+        default: false,
+    },
     createdAt: {
         type: Date,
         default: Date.now,

@@ -49,8 +49,12 @@ const ReviewCard = ({ review }) => {
                         <User className="w-6 h-6" />
                     </div>
                     <div>
-                        <h4 className="font-bold text-white">{review.userId?.name || 'Anonymous Student'}</h4>
-                        <p className="text-xs text-slate-500">{review.userId?.university || 'University Student'}</p>
+                        <h4 className="font-bold text-white">
+                            {review.isAnonymous ? 'Anonymous Student' : (review.userId?.name || 'User')}
+                        </h4>
+                        <p className="text-xs text-slate-500">
+                            {review.isAnonymous ? 'University Student' : (review.userId?.university || 'University')}
+                        </p>
                     </div>
                 </div>
                 <div className="flex items-center gap-6">
@@ -82,8 +86,8 @@ const ReviewCard = ({ review }) => {
                         disabled={isVoting}
                         className={clsx(
                             "flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all active:scale-95 font-medium",
-                            isHelpful 
-                                ? "bg-primary-500/20 text-primary-400 shadow-lg shadow-primary-500/20" 
+                            isHelpful
+                                ? "bg-primary-500/20 text-primary-400 shadow-lg shadow-primary-500/20"
                                 : "hover:bg-primary-500/10 hover:text-primary-400"
                         )}
                     >

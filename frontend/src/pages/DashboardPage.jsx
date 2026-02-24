@@ -89,6 +89,11 @@ const DashboardPage = () => {
                                             </div>
                                             <span>•</span>
                                             <span>{review.professorId?.university}</span>
+                                            {review.isAnonymous && (
+                                                <span className="ml-2 px-2 py-0.5 bg-slate-800 text-slate-500 text-[10px] uppercase font-bold rounded-md border border-slate-700">
+                                                    Anonymous
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
 

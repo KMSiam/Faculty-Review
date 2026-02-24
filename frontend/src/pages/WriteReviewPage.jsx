@@ -14,6 +14,7 @@ const WriteReviewPage = () => {
         rating: 0,
         difficulty: 0,
         comment: '',
+        isAnonymous: false,
     });
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -141,6 +142,22 @@ const WriteReviewPage = () => {
                             value={formData.comment}
                             onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
                         />
+                    </div>
+
+                    <div className="flex items-center gap-3 bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
+                        <label className="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                className="sr-only peer"
+                                checked={formData.isAnonymous}
+                                onChange={(e) => setFormData({ ...formData, isAnonymous: e.target.checked })}
+                            />
+                            <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent-500"></div>
+                        </label>
+                        <div>
+                            <span className="text-white font-bold block">Post Anonymously</span>
+                            <span className="text-xs text-slate-500">Your name will be hidden from the public profile.</span>
+                        </div>
                     </div>
 
                     <button

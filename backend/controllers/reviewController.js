@@ -12,7 +12,7 @@ const createReview = async (req, res, next) => {
             return res.status(400).json({ message: errors.array()[0].msg });
         }
 
-        const { professorId, rating, difficulty, comment } = req.body;
+        const { professorId, rating, difficulty, comment, isAnonymous } = req.body;
 
         // Verify professor exists
         const professor = await Professor.findById(professorId);
@@ -37,6 +37,7 @@ const createReview = async (req, res, next) => {
             rating,
             difficulty,
             comment,
+            isAnonymous: isAnonymous || false,
         });
 
         // Update professor average rating and review count
