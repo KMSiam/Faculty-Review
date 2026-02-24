@@ -8,7 +8,7 @@ const User = require('../models/User');
 const getStats = async (req, res, next) => {
     try {
         const [professorCount, reviewCount, userCount] = await Promise.all([
-            Professor.countDocuments(),
+            Professor.countDocuments({ isVerified: true }),
             Review.countDocuments(),
             User.countDocuments(),
         ]);

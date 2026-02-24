@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import StarRating from './StarRating';
-import { Building2, GraduationCap, Users } from 'lucide-react';
+import { Building2, GraduationCap, Users, CheckCircle2 } from 'lucide-react';
 
 const ProfessorCard = ({ professor }) => {
     return (
@@ -11,8 +11,11 @@ const ProfessorCard = ({ professor }) => {
         >
             <div className="flex justify-between items-start mb-4">
                 <div>
-                    <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors">
+                    <h3 className="text-xl font-bold text-white group-hover:text-primary-400 transition-colors flex items-center gap-2">
                         {professor.name}
+                        {professor.isVerified && (
+                            <CheckCircle2 className="w-5 h-5 text-primary-500 fill-primary-500/10" />
+                        )}
                     </h3>
                     <div className="flex items-center gap-2 text-slate-400 text-sm mt-1">
                         <GraduationCap className="w-4 h-4" />

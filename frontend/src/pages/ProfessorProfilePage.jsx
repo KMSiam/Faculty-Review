@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { GraduationCap, Building2, Star, MessageSquare, AlertCircle, PlusCircle } from 'lucide-react';
+import { GraduationCap, Building2, Star, MessageSquare, AlertCircle, PlusCircle, CheckCircle2 } from 'lucide-react';
 import api from '../utils/api';
 import StarRating from '../components/StarRating';
 import ReviewCard from '../components/ReviewCard';
@@ -57,7 +57,12 @@ const ProfessorProfilePage = () => {
                     <div className="inline-flex items-center px-3 py-1 bg-slate-800 rounded-full text-xs font-bold text-primary-400 uppercase tracking-widest border border-slate-700">
                         Professor Profile
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-extrabold text-white">{professor.name}</h1>
+                    <h1 className="text-4xl md:text-5xl font-extrabold text-white flex items-center gap-3">
+                        {professor.name}
+                        {professor.isVerified && (
+                            <CheckCircle2 className="w-8 h-8 text-primary-500 fill-primary-500/10" />
+                        )}
+                    </h1>
                     <div className="flex flex-wrap gap-6 text-slate-400">
                         <div className="flex items-center gap-2">
                             <GraduationCap className="w-5 h-5 text-primary-500" />
