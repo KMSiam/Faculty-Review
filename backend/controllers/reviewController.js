@@ -123,4 +123,37 @@ const toggleHelpful = async (req, res, next) => {
     }
 };
 
-module.exports = { createReview, getReviewsByProfessor, getMyReviews, toggleHelpful };
+// @desc    Report a review (Toggle)
+// @route   POST /api/reviews/:id/report
+// @access  Private
+const reportReview = async (req, res, next) => {
+    try {
+        const review = await Review.findById(req.params.id);
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found' });
+        }
+
+        const reportIndex = review.reports.indexOf(req.user._id);
+        let message = '';
+        let isReported = false;
+
+        if (reportIndex > -1) {
+            // Remove report (Undo)
+            review.reports.splice(reportIndex, 1);
+            message = 'Report removed';
+            isReported = false;
+        } else {
+            // Add report
+            review.reports.push(req.user._id);
+            message = 'Review reported successfully';
+            isReported = true;
+        }
+
+        await review.save();
+        res.json({ message, isReported });
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { createReview, getReviewsByProfessor, getMyReviews, toggleHelpful, reportReview };
