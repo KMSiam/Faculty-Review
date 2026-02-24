@@ -3,6 +3,7 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { Search, Filter, X, SlidersHorizontal } from 'lucide-react';
 import api from '../utils/api';
 import ProfessorCard from '../components/ProfessorCard';
+import UniversityAutocomplete from '../components/UniversityAutocomplete';
 
 const SearchResultsPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
@@ -86,24 +87,12 @@ const SearchResultsPage = () => {
 
                             <div className="space-y-2">
                                 <label className="text-sm font-medium text-slate-400">University</label>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        className="input-field text-sm"
-                                        placeholder="e.g. Stanford"
-                                        value={universityInput}
-                                        onChange={(e) => setUniversityInput(e.target.value)}
-                                    />
-                                    {universityInput && (
-                                        <button
-                                            type="button"
-                                            onClick={() => setUniversityInput('')}
-                                            className="absolute right-3 top-2.5 text-slate-500 hover:text-white"
-                                        >
-                                            <X className="w-4 h-4" />
-                                        </button>
-                                    )}
-                                </div>
+                                <UniversityAutocomplete
+                                    value={universityInput}
+                                    onChange={setUniversityInput}
+                                    placeholder="e.g. Stanford"
+                                    required={false}
+                                />
                             </div>
 
                             <div className="flex flex-col gap-2 pt-2">

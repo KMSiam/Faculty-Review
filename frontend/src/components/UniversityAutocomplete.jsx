@@ -3,7 +3,7 @@ import { Search, X } from 'lucide-react';
 import { universities } from '../utils/universities';
 import clsx from 'clsx';
 
-const UniversityAutocomplete = ({ value, onChange, placeholder = "Search university..." }) => {
+const UniversityAutocomplete = ({ value, onChange, placeholder = "Search university...", required = true, name = "university" }) => {
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [inputValue, setInputValue] = useState(value || '');
@@ -50,6 +50,7 @@ const UniversityAutocomplete = ({ value, onChange, placeholder = "Search univers
         <div className="relative w-full" ref={wrapperRef}>
             <input
                 type="text"
+                name={name}
                 value={inputValue}
                 onChange={handleInputChange}
                 onFocus={() => {
@@ -63,7 +64,7 @@ const UniversityAutocomplete = ({ value, onChange, placeholder = "Search univers
                 }}
                 className="input-field pl-11 w-full"
                 placeholder={placeholder}
-                required
+                required={required}
             />
             {inputValue && (
                 <button

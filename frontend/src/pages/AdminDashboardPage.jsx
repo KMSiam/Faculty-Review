@@ -17,6 +17,7 @@ import {
 import api from '../utils/api';
 import { useToast } from '../context/ToastContext';
 import clsx from 'clsx';
+import UniversityAutocomplete from '../components/UniversityAutocomplete';
 
 const AdminDashboardPage = () => {
     const { addToast } = useToast();
@@ -27,6 +28,7 @@ const AdminDashboardPage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const activeTab = searchParams.get('tab') || 'stats';
     const [editingProfessor, setEditingProfessor] = useState(null);
+    const [editUniversity, setEditUniversity] = useState('');
     const [reports, setReports] = useState([]);
 
     useEffect(() => {
@@ -247,7 +249,10 @@ const AdminDashboardPage = () => {
                                         <td className="px-6 py-4 text-right">
                                             <div className="flex justify-end gap-2">
                                                 <button
-                                                    onClick={() => setEditingProfessor(prof)}
+                                                    onClick={() => {
+                                                        setEditingProfessor(prof);
+                                                        setEditUniversity(prof.university);
+                                                    }}
                                                     className="p-2 text-slate-500 hover:text-white hover:bg-slate-800 rounded-lg transition-all"
                                                 >
                                                     <Edit className="w-4 h-4" />
@@ -376,7 +381,7 @@ const AdminDashboardPage = () => {
                         </button>
                         <h3 className="text-2xl font-bold text-white mb-6">Edit Professor</h3>
                         <form onSubmit={handleUpdateProfessor} className="space-y-4">
-                            <div className="space-y-1">
+                            <div className="space-y-1 text-left">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Full Name</label>
                                 <input
                                     name="name"
@@ -385,7 +390,7 @@ const AdminDashboardPage = () => {
                                     className="input-field"
                                 />
                             </div>
-                            <div className="space-y-1">
+                            <div className="space-y-1 text-left">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">Department</label>
                                 <input
                                     name="department"
@@ -394,13 +399,13 @@ const AdminDashboardPage = () => {
                                     className="input-field"
                                 />
                             </div>
-                            <div className="space-y-1">
+                            <div className="space-y-1 text-left">
                                 <label className="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1">University</label>
-                                <input
-                                    name="university"
-                                    required
-                                    defaultValue={editingProfessor.university}
-                                    className="input-field"
+                                <UniversityAutocomplete
+                                    value={editUniversity}
+                                    onChange={setEditUniversity}
+                                    placeholder="e.g. University of Dhaka"
+                                    required={true}
                                 />
                             </div>
                             <button type="submit" className="btn-primary w-full py-3 mt-4">
