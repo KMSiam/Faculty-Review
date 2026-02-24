@@ -9,7 +9,9 @@ import {
     X,
     AlertCircle,
     ShieldCheck,
-    Search
+    Search,
+    Flag,
+    CheckCircle
 } from 'lucide-react';
 import api from '../utils/api';
 import { useToast } from '../context/ToastContext';
@@ -23,6 +25,7 @@ const AdminDashboardPage = () => {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('stats');
     const [editingProfessor, setEditingProfessor] = useState(null);
+    const [reports, setReports] = useState([]);
 
     useEffect(() => {
         document.title = 'Admin Dashboard | FacultyReview';
@@ -32,14 +35,16 @@ const AdminDashboardPage = () => {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const [statsRes, profRes, usersRes] = await Promise.all([
+            const [statsRes, profRes, usersRes, reportsRes] = await Promise.all([
                 api.get('/admin/stats'),
                 api.get('/admin/professors'),
-                api.get('/admin/users')
+                api.get('/admin/users'),
+                api.get('/admin/reports')
             ]);
             setStats(statsRes.data.stats);
             setProfessors(profRes.data);
             setUsers(usersRes.data);
+            setReports(reportsRes.data);
         } catch (error) {
             addToast('Failed to fetch admin data', 'error');
         } finally {
@@ -97,6 +102,27 @@ const AdminDashboardPage = () => {
         }
     };
 
+    const handleDismissReport = async (id) => {
+        try {
+            await api.patch(`/admin/reviews/${id}/dismiss`);
+            setReports(reports.filter(r => r._id !== id));
+            addToast('Reports dismissed', 'success');
+        } catch (error) {
+            addToast('Dismiss failed', 'error');
+        }
+    };
+
+    const handleDeleteReview = async (id) => {
+        if (!window.confirm('Delete this review?')) return;
+        try {
+            await api.delete(`/admin/reviews/${id}`);
+            setReports(reports.filter(r => r._id !== id));
+            addToast('Review deleted', 'success');
+        } catch (error) {
+            addToast('Deletion failed', 'error');
+        }
+    };
+
     if (loading) return (
         <div className="flex justify-center items-center h-64">
             <div className="w-10 h-10 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
@@ -117,17 +143,20 @@ const AdminDashboardPage = () => {
 
             {/* Tabs */}
             <div className="flex gap-2 p-1 bg-slate-900/50 rounded-xl w-fit border border-slate-800">
-                {['stats', 'professors', 'users'].map((tab) => (
+                {['stats', 'professors', 'users', 'reports'].map((tab) => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
                         className={clsx(
-                            "px-6 py-2.5 rounded-lg text-sm font-bold transition-all capitalize",
+                            "px-6 py-2.5 rounded-lg text-sm font-bold transition-all capitalize flex items-center gap-2",
                             activeTab === tab
                                 ? "bg-primary-500 text-white shadow-lg shadow-primary-500/20"
                                 : "text-slate-400 hover:text-white hover:bg-slate-800"
                         )}
                     >
+                        {tab === 'reports' && reports.length > 0 && (
+                            <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                        )}
                         {tab}
                     </button>
                 ))}
@@ -162,6 +191,15 @@ const AdminDashboardPage = () => {
                         </div>
                         <div className="text-3xl font-black text-white">{stats.totalReviews}</div>
                         <div className="text-sm font-bold text-slate-500 uppercase tracking-widest mt-1">Total Reviews</div>
+                    </div>
+                    <div className="glass-card p-8 group">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="w-12 h-12 bg-red-500/10 text-red-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <Flag className="w-6 h-6" />
+                            </div>
+                        </div>
+                        <div className="text-3xl font-black text-white">{stats.reportedReviews}</div>
+                        <div className="text-sm font-bold text-slate-500 uppercase tracking-widest mt-1">Reported Reviews</div>
                     </div>
                 </div>
             )}
@@ -269,6 +307,57 @@ const AdminDashboardPage = () => {
                             </tbody>
                         </table>
                     </div>
+                </div>
+            )}
+
+            {/* Reports Tab */}
+            {activeTab === 'reports' && (
+                <div className="space-y-4 animate-slide-up">
+                    {reports.length === 0 ? (
+                        <div className="glass-card p-20 text-center">
+                            <CheckCircle className="w-16 h-16 text-green-500/20 mx-auto mb-4" />
+                            <h3 className="text-xl font-bold text-white">All Clear!</h3>
+                            <p className="text-slate-500">No reviews have been reported yet.</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 gap-4">
+                            {reports.map((report) => (
+                                <div key={report._id} className="glass-card p-6 border-l-4 border-red-500">
+                                    <div className="flex justify-between items-start gap-4">
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <span className="text-xs font-black uppercase tracking-widest px-2 py-0.5 bg-red-500/10 text-red-500 rounded">
+                                                    {report.reports?.length} Reports
+                                                </span>
+                                                <span className="text-slate-500 text-xs">
+                                                    Target: <span className="text-white font-bold">{report.professorId?.name}</span>
+                                                </span>
+                                            </div>
+                                            <p className="text-slate-300 italic mb-4">"{report.comment}"</p>
+                                            <div className="flex items-center gap-4 text-[10px] text-slate-500 uppercase font-black tracking-widest">
+                                                <span>By: {report.userId?.name}</span>
+                                                <span>Rating: {report.rating}/5</span>
+                                            </div>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => handleDismissReport(report._id)}
+                                                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-bold transition-all"
+                                            >
+                                                Dismiss
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteReview(report._id)}
+                                                className="px-4 py-2 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-lg text-xs font-bold transition-all"
+                                            >
+                                                Delete Review
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             )}
 

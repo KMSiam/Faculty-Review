@@ -7,7 +7,10 @@ const {
     updateProfessor,
     deleteProfessor,
     getAllUsers,
-    toggleUserStatus
+    toggleUserStatus,
+    getReportedReviews,
+    dismissReports,
+    deleteReview
 } = require('../controllers/adminController');
 const { protect } = require('../middleware/auth');
 const admin = require('../middleware/admin');
@@ -27,5 +30,10 @@ router.delete('/professors/:id', deleteProfessor);
 // User management
 router.get('/users', getAllUsers);
 router.patch('/users/:id/status', toggleUserStatus);
+
+// Report management
+router.get('/reports', getReportedReviews);
+router.patch('/reviews/:id/dismiss', dismissReports);
+router.delete('/reviews/:id', deleteReview);
 
 module.exports = router;

@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Search, User, LogOut, Menu, X, PlusCircle } from 'lucide-react';
+import { Search, User, LogOut, Menu, X, PlusCircle, ShieldCheck } from 'lucide-react';
 
 const Navbar = () => {
-    const { user, logout } = useAuth();
+    const { user, logout, isAdmin } = useAuth();
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -48,6 +48,11 @@ const Navbar = () => {
                                 <Link to="/add-professor" className="text-slate-300 hover:text-white flex items-center gap-1 text-sm font-medium">
                                     <PlusCircle className="w-4 h-4" /> Add Professor
                                 </Link>
+                                {isAdmin && (
+                                    <Link to="/admin" className="text-primary-400 hover:text-primary-300 flex items-center gap-1 text-sm font-bold">
+                                        <ShieldCheck className="w-4 h-4" /> Admin Panel
+                                    </Link>
+                                )}
                                 <Link to="/dashboard" className="text-slate-300 hover:text-white flex items-center gap-1 text-sm font-medium">
                                     <User className="w-4 h-4" /> Dashboard
                                 </Link>
@@ -94,6 +99,9 @@ const Navbar = () => {
                         {user ? (
                             <>
                                 <Link to="/add-professor" onClick={() => setMobileMenuOpen(false)} className="text-slate-300">Add Professor</Link>
+                                {isAdmin && (
+                                    <Link to="/admin" onClick={() => setMobileMenuOpen(false)} className="text-primary-400 font-bold">Admin Panel</Link>
+                                )}
                                 <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="text-slate-300">Dashboard</Link>
                                 <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="text-left text-red-400">Logout</button>
                             </>

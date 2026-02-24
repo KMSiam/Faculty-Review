@@ -39,6 +39,12 @@ const reviewSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    reports: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+    ],
     createdAt: {
         type: Date,
         default: Date.now,

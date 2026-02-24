@@ -7,17 +7,19 @@ const Review = require('../models/Review');
 // @access  Private/Admin
 const getDashboardStats = async (req, res, next) => {
     try {
-        const [totalUsers, totalProfessors, totalReviews] = await Promise.all([
+        const [totalUsers, totalProfessors, totalReviews, reportedReviews] = await Promise.all([
             User.countDocuments({ role: 'student' }),
             Professor.countDocuments(),
-            Review.countDocuments()
+            Review.countDocuments(),
+            Review.countDocuments({ 'reports.0': { $exists: true } })
         ]);
 
         res.json({
             stats: {
                 totalUsers,
                 totalProfessors,
-                totalReviews
+                totalReviews,
+                reportedReviews
             }
         });
     } catch (error) {
@@ -142,6 +144,54 @@ const toggleUserStatus = async (req, res, next) => {
     }
 };
 
+// @desc    Get all reported reviews
+// @route   GET /api/admin/reports
+// @access  Private/Admin
+const getReportedReviews = async (req, res, next) => {
+    try {
+        const reviews = await Review.find({ 'reports.0': { $exists: true } })
+            .populate('userId', 'name email university')
+            .populate('professorId', 'name university department')
+            .sort({ updatedAt: -1 });
+        res.json(reviews);
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Clear reports from a review (Dismiss)
+// @route   PATCH /api/admin/reviews/:id/dismiss
+// @access  Private/Admin
+const dismissReports = async (req, res, next) => {
+    try {
+        const review = await Review.findById(req.params.id);
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found' });
+        }
+        review.reports = [];
+        await review.save();
+        res.json({ message: 'Reports dismissed successfully' });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Delete a review
+// @route   DELETE /api/admin/reviews/:id
+// @access  Private/Admin
+const deleteReview = async (req, res, next) => {
+    try {
+        const review = await Review.findById(req.params.id);
+        if (!review) {
+            return res.status(404).json({ message: 'Review not found' });
+        }
+        await review.deleteOne();
+        res.json({ message: 'Review deleted successfully' });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getDashboardStats,
     getAllProfessors,
@@ -149,5 +199,8 @@ module.exports = {
     updateProfessor,
     deleteProfessor,
     getAllUsers,
-    toggleUserStatus
+    toggleUserStatus,
+    getReportedReviews,
+    dismissReports,
+    deleteReview
 };
